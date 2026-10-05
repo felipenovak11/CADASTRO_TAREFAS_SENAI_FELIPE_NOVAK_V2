@@ -1,7 +1,7 @@
 /* Variáveis CSS - facilitar o uso de temas para formatação*/
 :root {
-    --gradiente-fundo: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    --fundo-cartao: #fff;
+    --gradiente-fundo: linear-gradient(135deg, #1f4555 0%, #72c3e9 100%);
+    --fundo-cartao: #ffffff;
     --cor-texto: #2d3748;
     --cor-primaria: #6c5ce7;
     --cor-primaria-destaque: #5b4b54;
@@ -33,6 +33,14 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+}
+
+img{
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
 }
 
 .cartao-aplicacao {
@@ -84,6 +92,22 @@ input[type="text"] {
 
 input[type="text"]:focus {
     border-color: var(--cor-primaria);
+}
+
+#botao-limpar-tudo {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-weight: 600px;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+}
+
+#botao-limpar-tudo:hover {
+    background: var(--cor-primaria-destaque);
+    transform: translateY(-2px);
 }
 
 .botao-principal {
