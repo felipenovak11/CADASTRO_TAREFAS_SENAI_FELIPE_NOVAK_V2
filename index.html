@@ -8,35 +8,79 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-   <div class="cartao-aplicacao">
-    <header class="cabecalho-aplicacao">
-        <img src="minha-foto.jpg">
-        <h1>Minhas Tarefas ✨</h1>
-        <button class="botao-icone" id="botao-alterar-tema">
-            <i class="fa-solid fa-moon"></i>
+<div class="cartao-aplicacao">
+    <div class="cabecalho-aplicacao">
+    <img src="minha-foto.jpg" alt="Foto de perfil">
+    <h1>Minhas Tarefas ✨</h1>
+    <div class="botoes-topo" style="display: flex; gap: 10px;">
+        <button id="botao-ajuda-popover" class="botao-icone" title="Ver atualizações">
+            <i class="fa-solid fa-circle-question"></i>
         </button>
-    </header>
-    <div class="caixa-entrada">
-        <input type="text" id="campo-tarefa" placeholder="O que vamos fazer hoje?..." maxlength="40">
-        <button class="botao-principal" id="botao-adicionar">
-            <i class="fa-solid fa-plus"></i>Adicionar
-        </button>
+        
+        <button id="botao-alterar-tema" class="botao-icone"><i class="fa-solid fa-moon"></i></button>
+    </div>
+</div>
+
+
+    <!-- Caixa de entrada original com adição de Data e Prioridade logo abaixo -->
+    <div class="caixa-entrada-container">
+        <div class="caixa-entrada">
+            <input type="text" id="campo-tarefa" placeholder="Digite uma tarefa...">
+            <button id="botao-adicionar" class="botao-principal">Adicionar</button>
+        </div>
+        <!-- NOVOS CAMPOS PEDIDOS -->
+        <div class="campos-adicionais" style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input type="date" id="data-tarefa" style="flex: 1; padding: 10px; border: 2px solid var(--cor-borda); border-radius: 12px; background: transparent; color: var(--cor-texto);">
+            <select id="prioridade-tarefa" style="flex: 1; padding: 10px; border: 2px solid var(--cor-borda); border-radius: 12px; background: transparent; color: var(--cor-texto);">
+                <option value="Baixa">🟢 Baixa</option>
+                <option value="Média">🟡 Média</option>
+                <option value="Alta">🔴 Alta</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- NOVAS DIVISÓRIAS (ABAS) PEDIDAS -->
+    <div class="abas-navegacao" style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--cor-borda); padding-bottom: 8px;">
+        <button class="aba-item ativa" data-aba="todas" style="background: none; border: none; padding: 6px 12px; cursor: pointer; font-weight: 600; color: var(--cor-primaria);">Todas</button>
+        <button class="aba-item" data-aba="pendentes" style="background: none; border: none; padding: 6px 12px; cursor: pointer; font-weight: 600; color: var(--cor-concluido);">Pendentes</button>
+        <button class="aba-item" data-aba="concluidas" style="background: none; border: none; padding: 6px 12px; cursor: pointer; font-weight: 600; color: var(--cor-concluido);">Concluídas</button>
+    </div>
+
+    <!-- Listas originais estritamente mantidas -->
+    <ul id="lista-tarefas" class="lista-tarefas"></ul>
+    
+    <div class="historico-secao" style="margin-top: 20px;">
+        <h3>Tarefas anteriores</h3>
+        <ul id="lista-historico" class="lista-tarefas"></ul>
+    </div>
+
+    <div class="rodape-aplicacao">
+        <span id="contador-tarefas">0 tarefas na lista</span>
         <button id="botao-limpar-tudo">Limpar Tudo</button>
     </div>
-    <ul class="lista-tarefas" id="lista-tarefas">
-        <!-- As tarefas serão inseridas dinamicamente via JavaScript -->
-    </ul>
-        <div class="caixa-tarefas-anteriores">
-        <h3>Tarefas anteriores</h3>
-        <ul id="lista-historico"></ul>
+</div>
+
+<!-- NOVO: Popover de Atualizações -->
+<div id="popover-atualizacoes" class="popover-container">
+    <div class="popover-conteudo">
+        <div class="popover-cabecalho">
+            <h2>🚀 Novas Funcionalidades!</h2>
+            <button id="botao-fechar-popover" class="popover-fechar">&times;</button>
+        </div>
+        <div class="popover-corpo">
+            <p>Seu gerenciador de tarefas está de cara nova! Confira o que mudou:</p>
+            <ul>
+                <li><strong>🗂️ Divisórias (Abas):</strong> Agora você pode filtrar entre Todas, Pendentes e Concluídas.</li>
+                <li><strong>📅 Data de Entrega:</strong> Adicione prazos limite para as suas tarefas.</li>
+                <li><strong>⚡ Nível de Prioridade:</strong> Defina a urgência entre Baixa, Média e Alta com cores indicativas.</li>
+            </ul>
+        </div>
+        <button id="popover-botao-ok" class="popover-botao">Entendido!</button>
     </div>
-    <footer class="rodape-aplicacao">
-        <span id="contador-tarefas">0 tarefas na lista</span>
-    </footer>
-   </div>
+</div>
 
 
 
-   <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
-</html>  
+</html>

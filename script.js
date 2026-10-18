@@ -6,10 +6,14 @@ const botaoTema = document.getElementById("botao-alterar-tema");
 const botaoLimparTudo = document.getElementById("botao-limpar-tudo");
 const listaHistorico = document.getElementById("lista-historico");
 
+// NOVOS ELEMENTOS MAPEADOS
+const dataTarefa = document.getElementById("data-tarefa");
+const prioridadeTarefa = document.getElementById("prioridade-tarefa");
+const abas = document.querySelectorAll(".aba-item");
 
 let tarefas = [];
-
 let tarefasHistorico = [];
+let abaAtual = "todas"; // Controla qual divisória está ativa
 
 function salvarTarefas() {
     const todasAsTarefas = [...tarefas, ...tarefasHistorico];
@@ -25,15 +29,32 @@ function carregarTarefas() {
     
     tarefas = []; 
     mostrarTarefas();
-    mostrarTarefas(); 
+}
+
+function formatarData(dataString) {
+    if (!dataString) return "Sem prazo";
+    const [ano, mes, dia] = dataString.split("-");
+    return `${dia}/${mes}/${ano}`;
 }
 
 function mostrarHistorico() {
     listaHistorico.innerHTML = "";
 
-    tarefasHistorico.forEach((tarefa, indice) => {
+    // Filtra também o histórico baseado na aba selecionada
+    const historicoFiltrado = tarefasHistorico.filter(tarefa => {
+        if (abaAtual === "pendentes") return !tarefa.concluida;
+        if (abaAtual === "concluidas") return tarefa.concluida;
+        return true;
+    });
+
+    historicoFiltrado.forEach((tarefa) => {
+        const indiceReal = tarefasHistorico.indexOf(tarefa);
+
         const item = document.createElement("li");
         item.className = "item-tarefa";
+
+        const conteudoTexto = document.createElement("div");
+        conteudoTexto.className = "conteudo-tarefa-texto";
 
         const texto = document.createElement("span");
         texto.textContent = tarefa.nome;
@@ -41,6 +62,14 @@ function mostrarHistorico() {
         if (tarefa.concluida) {
             texto.classList.add("concluida");
         }
+
+        // Adiciona data e prioridade se existirem
+        const detalhes = document.createElement("div");
+        detalhes.className = "detalhes-tarefa";
+        detalhes.innerHTML = `<span>📅 ${formatarData(tarefa.data)}</span> <span class="prio-${tarefa.prioridade || 'Baixa'}">⚡ ${tarefa.prioridade || 'Baixa'}</span>`;
+
+        conteudoTexto.appendChild(texto);
+        conteudoTexto.appendChild(detalhes);
 
         const botoes = document.createElement("div");
         botoes.className = "botoes-tarefa";
@@ -51,9 +80,10 @@ function mostrarHistorico() {
         botaoConcluir.title = "Concluir tarefa";
 
         botaoConcluir.addEventListener("click", function() {
-            tarefasHistorico[indice].concluida = !tarefasHistorico[indice].concluida;
+            tarefasHistorico[indiceReal].concluida = !tarefasHistorico[indiceReal].concluida;
             salvarTarefas();
             mostrarHistorico();
+            mostrarTarefas();
         });
 
         const botaoExcluir = document.createElement("button");
@@ -62,15 +92,16 @@ function mostrarHistorico() {
         botaoExcluir.title = "Excluir tarefa";
 
         botaoExcluir.addEventListener("click", function() {
-            tarefasHistorico.splice(indice, 1);
+            tarefasHistorico.splice(indiceReal, 1);
             salvarTarefas();
             mostrarHistorico();
+            mostrarTarefas();
         });
 
         botoes.appendChild(botaoConcluir);
         botoes.appendChild(botaoExcluir);
 
-        item.appendChild(texto);
+        item.appendChild(conteudoTexto);
         item.appendChild(botoes);
 
         listaHistorico.appendChild(item);
@@ -85,25 +116,41 @@ function adicionarTarefa() {
         return;
     }
 
+    // Guardando com as novas propriedades de data e prioridade
     const tarefa = {
         nome: texto,
-        concluida: false
+        concluida: false,
+        data: dataTarefa.value,
+        prioridade: prioridadeTarefa.value
     };
 
     tarefas.push(tarefa);
     campoTarefa.value = "";
+    dataTarefa.value = "";
+    prioridadeTarefa.value = "Baixa";
 
     salvarTarefas();
-
     mostrarTarefas();
 }
 
 function mostrarTarefas() {
     listaTarefas.innerHTML = "";
 
-    tarefas.forEach((tarefa, indice) => {
+    // Filtra a lista atual baseado na aba selecionada
+    const tarefasFiltradas = tarefas.filter(tarefa => {
+        if (abaAtual === "pendentes") return !tarefa.concluida;
+        if (abaAtual === "concluidas") return tarefa.concluida;
+        return true;
+    });
+
+    tarefasFiltradas.forEach((tarefa) => {
+        const indiceReal = tarefas.indexOf(tarefa);
+
         const item = document.createElement("li");
         item.className = "item-tarefa";
+
+        const conteudoTexto = document.createElement("div");
+        conteudoTexto.className = "conteudo-tarefa-texto";
 
         const texto = document.createElement("span");
         texto.textContent = tarefa.nome;
@@ -111,6 +158,14 @@ function mostrarTarefas() {
         if (tarefa.concluida) {
             texto.classList.add("concluida");
         }
+
+        // Adiciona data e prioridade na exibição
+        const detalhes = document.createElement("div");
+        detalhes.className = "detalhes-tarefa";
+        detalhes.innerHTML = `<span>📅 ${formatarData(tarefa.data)}</span> <span class="prio-${tarefa.prioridade || 'Baixa'}">⚡ ${tarefa.prioridade || 'Baixa'}</span>`;
+
+        conteudoTexto.appendChild(texto);
+        conteudoTexto.appendChild(detalhes);
 
         const botoes = document.createElement("div");
         botoes.className = "botoes-tarefa";
@@ -121,9 +176,10 @@ function mostrarTarefas() {
         botaoConcluir.title = "Concluir tarefa";
 
         botaoConcluir.addEventListener("click", function() {
-            tarefas[indice].concluida = !tarefas[indice].concluida;
+            tarefas[indiceReal].concluida = !tarefas[indiceReal].concluida;
             salvarTarefas();
             mostrarTarefas();
+            mostrarHistorico();
         });
 
         const botaoExcluir = document.createElement("button");
@@ -132,25 +188,38 @@ function mostrarTarefas() {
         botaoExcluir.title = "Excluir tarefa";
 
         botaoExcluir.addEventListener("click", function() {
-            tarefas.splice(indice, 1);
+            tarefas.splice(indiceReal, 1);
             salvarTarefas();
             mostrarTarefas();
+            mostrarHistorico();
         });
 
         botoes.appendChild(botaoConcluir);
         botoes.appendChild(botaoExcluir);
 
-        item.appendChild(texto);
+        item.appendChild(conteudoTexto);
         item.appendChild(botoes);
 
         listaTarefas.appendChild(item);
     });
 
     contadorTarefas.textContent =
-        tarefas.length + (tarefas.length === 1
+        tarefasFiltradas.length + (tarefasFiltradas.length === 1
             ? " tarefa na lista"
             : " tarefas na lista");
 }
+
+// LOGICA DE EVENTO PARA CLIQUE NAS ABAS
+abas.forEach(aba => {
+    aba.addEventListener("click", function() {
+        abas.forEach(a => a.style.color = "var(--cor-concluido)");
+        this.style.color = "var(--cor-primaria)";
+        
+        abaAtual = this.getAttribute("data-aba");
+        mostrarTarefas();
+        mostrarHistorico();
+    });
+});
 
 botaoAdicionar.addEventListener("click", adicionarTarefa);
 
@@ -187,5 +256,35 @@ botaoLimparTudo.addEventListener("click", function() {
     }
 });
 
+carregarTarefas();
 
-carregarTarefas(); 
+// Substitua o bloco do popover no final do script por este atualizado:
+const popover = document.getElementById("popover-atualizacoes");
+const botaoFecharPopover = document.getElementById("botao-fechar-popover");
+const botaoOkPopover = document.getElementById("popover-botao-ok");
+const botaoAjudaPopover = document.getElementById("botao-ajuda-popover"); // MAPEADO
+
+function fecharPopover() {
+    popover.style.display = "none";
+}
+
+function abrirPopover() {
+    popover.style.display = "flex"; // Faz o popover reaparecer na tela
+}
+
+// NOVO: Abre o popover ao clicar no ícone de interrogação
+botaoAjudaPopover.addEventListener("click", abrirPopover);
+
+// Fecha ao clicar no 'X'
+botaoFecharPopover.addEventListener("click", fecharPopover);
+
+// Fecha ao clicar no botão 'Entendido!'
+botaoOkPopover.addEventListener("click", fecharPopover);
+
+// Fecha se o usuário clicar fora da caixinha
+window.addEventListener("click", function(event) {
+    if (event.target === popover) {
+        fecharPopover();
+    }
+});
+
